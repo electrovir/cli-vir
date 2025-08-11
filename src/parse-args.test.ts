@@ -174,7 +174,9 @@ describe(parseArgs.name, () => {
                 ],
                 {
                     restValues: {
-                        position: {rest: true},
+                        position: {
+                            rest: true,
+                        },
                     },
                 },
             ],
@@ -187,12 +189,34 @@ describe(parseArgs.name, () => {
             },
         },
         {
+            it: 'parses a single rest arg into an array',
+            inputs: [
+                [
+                    'one',
+                ],
+                {
+                    restValues: {
+                        position: {
+                            rest: true,
+                        },
+                    },
+                },
+            ],
+            expect: {
+                restValues: [
+                    'one',
+                ],
+            },
+        },
+        {
             it: 'sets rest to array even when empty',
             inputs: [
                 [],
                 {
                     restValues: {
-                        position: {rest: true},
+                        position: {
+                            rest: true,
+                        },
                     },
                 },
             ],
@@ -210,7 +234,11 @@ describe(parseArgs.name, () => {
                 ],
                 {
                     first: {position: 0},
-                    restValues: {position: {rest: true}},
+                    restValues: {
+                        position: {
+                            rest: true,
+                        },
+                    },
                 },
             ],
             expect: {
@@ -230,7 +258,11 @@ describe(parseArgs.name, () => {
                     'third',
                 ],
                 {
-                    restValues: {position: {rest: true}},
+                    restValues: {
+                        position: {
+                            rest: true,
+                        },
+                    },
                     last: {position: 0},
                 },
             ],
@@ -251,7 +283,12 @@ describe(parseArgs.name, () => {
                     '3',
                 ],
                 {
-                    numbers: {position: {rest: true}, type: ArgValueType.Number},
+                    numbers: {
+                        position: {
+                            rest: true,
+                        },
+                        type: ArgValueType.Number,
+                    },
                 },
             ],
             expect: {
@@ -267,7 +304,12 @@ describe(parseArgs.name, () => {
             inputs: [
                 [],
                 {
-                    items: {position: {rest: true}, required: true},
+                    items: {
+                        position: {
+                            rest: true,
+                        },
+                        required: true,
+                    },
                 },
             ],
             throws: {matchMessage: 'Missing required arg items'},
@@ -279,8 +321,16 @@ describe(parseArgs.name, () => {
                     'a',
                 ],
                 {
-                    first: {position: {rest: true}},
-                    second: {position: {rest: true}},
+                    first: {
+                        position: {
+                            rest: true,
+                        },
+                    },
+                    second: {
+                        position: {
+                            rest: true,
+                        },
+                    },
                 },
             ],
             throws: {matchMessage: 'Only one rest positional argument is allowed'},

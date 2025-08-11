@@ -5,6 +5,7 @@ import {
     extractErrorMessage,
     getObjectTypedEntries,
     getObjectTypedValues,
+    getOrSet,
     kebabCaseToCamelCase,
     log,
     mapObjectValues,
@@ -108,21 +109,16 @@ export function parseStrippedArgs(
                 });
                 if (positionDefinition) {
                     if (positionDefinition.isRest) {
-                        const existing = positionArgs[positionDefinition.argName];
+                        const existing = getOrSet(
+                            positionArgs,
+                            positionDefinition.argName,
+                            () => [],
+                        ) satisfies MaybeArray<ExpandedPositionArgDefinitionWithValue> as ExpandedPositionArgDefinitionWithValue[];
                         const newEntry: ExpandedPositionArgDefinitionWithValue = {
                             ...positionDefinition,
                             value: rawArg,
                         };
-                        if (!existing) {
-                            positionArgs[positionDefinition.argName] = newEntry;
-                        } else if (check.isArray(existing)) {
-                            existing.push(newEntry);
-                        } else {
-                            positionArgs[positionDefinition.argName] = [
-                                existing,
-                                newEntry,
-                            ];
-                        }
+                        existing.push(newEntry);
                     } else {
                         positionArgs[positionDefinition.argName] = {
                             ...positionDefinition,
