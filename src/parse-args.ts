@@ -232,6 +232,12 @@ export function parseStrippedArgs(
             }
         });
 
+        expandedArgDefinitions.position.forEach((argDefinition) => {
+            if (argDefinition.isRest && !parsedArgs[argDefinition.argName]) {
+                parsedArgs[argDefinition.argName] = [];
+            }
+        });
+
         return parsedArgs;
     } catch (error) {
         if (error instanceof InvalidArgError) {

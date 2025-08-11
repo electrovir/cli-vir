@@ -68,6 +68,11 @@ describe(parseArgs.name, () => {
                     ],
                     position: 5,
                 },
+                restPositional: {
+                    position: {
+                        rest: true,
+                    },
+                },
 
                 multiFlag: {
                     flag: {
@@ -117,7 +122,6 @@ describe(parseArgs.name, () => {
 
         assert.tsType(value.numberEnumPositional).equals<NumberEnum | undefined>();
         assert.tsType(value.numberEnumPositional).notEquals<number | undefined>();
-        value.requiredOptionalValueFlag;
 
         assert.tsType(value).equals<{
             optionalPositional: string | undefined;
@@ -126,6 +130,7 @@ describe(parseArgs.name, () => {
             stringEnumPositional: StringEnum | undefined;
             numberEnumPositional: NumberEnum | undefined;
             arrayPositional: undefined | 'a' | 'b' | 1 | 2;
+            restPositional: string[];
 
             multiFlag: (string | true)[];
             requiredOptionalNumberFlag: number | true;
@@ -179,6 +184,20 @@ describe(parseArgs.name, () => {
                     'two',
                     'three',
                 ],
+            },
+        },
+        {
+            it: 'sets rest to array even when empty',
+            inputs: [
+                [],
+                {
+                    restValues: {
+                        position: {rest: true},
+                    },
+                },
+            ],
+            expect: {
+                restValues: [],
             },
         },
         {
@@ -252,18 +271,6 @@ describe(parseArgs.name, () => {
                 },
             ],
             throws: {matchMessage: 'Missing required arg items'},
-        },
-        {
-            it: 'allows optional rest positional to be omitted (is undefined)',
-            inputs: [
-                [],
-                {
-                    items: {position: {rest: true}},
-                },
-            ],
-            expect: {
-                items: undefined,
-            },
         },
         {
             it: 'errors if more than one rest positional is declared',

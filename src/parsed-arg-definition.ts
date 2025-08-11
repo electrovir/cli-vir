@@ -88,11 +88,11 @@ export type ExtractIfMultiple<Arg extends ArgDefinition> = Arg extends {flag: Fl
  *
  * @category Internal
  */
-export type ExtractIfRest<Arg extends ArgDefinition> = Arg extends {position: PositionArgOptions}
-    ? PositionArgOptions extends Arg['position']
-        ? Arg['position'] extends {rest: true}
-            ? true
-            : false
+export type ExtractIfRest<Arg extends ArgDefinition> = Arg extends {
+    position: infer Options extends PositionArgOptions;
+}
+    ? Options['rest'] extends true
+        ? true
         : false
     : false;
 
@@ -113,7 +113,9 @@ export type RemoveArgDashes<Key extends PropertyKey> = Key extends `-${infer Res
  */
 export type ParsedArg<Args extends ArgDefinitions> = {
     [Key in RemoveArgDashes<keyof Args>]: WithUnion<
-        InverseBoolean<Args[Key]['required']> | InverseBoolean<ExtractIfMultiple<Args[Key]>>,
+        | InverseBoolean<Args[Key]['required']>
+        | InverseBoolean<ExtractIfMultiple<Args[Key]>>
+        | InverseBoolean<ExtractIfRest<Args[Key]>>,
         Args[Key] extends {flag: true | AnyObject} ? false : undefined,
         WithArray<
             ExtractArgTypeWithFlag<Args[Key]>,
