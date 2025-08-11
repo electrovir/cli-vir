@@ -18,10 +18,17 @@ export type ParseArgsParams = Readonly<{
     importMeta: Readonly<Pick<ImportMeta, 'filename'>>;
 }> &
     PartialWithUndefined<{
+        /**
+         * If set to `true`, the automatic `--help` flag is disabled. The help message will still be
+         * printed on invalid input, control that is the `noFailureHelp` parameter.
+         *
+         * @default false
+         */
+        disableHelp: boolean;
         /** An overall description for the command. Used in the generated help message. */
         commandDescription: string;
         /**
-         * If true, will not error out when encountering unexpected arguments.
+         * If set to `true`, will not error out when encountering unexpected arguments.
          *
          * @default false
          */
@@ -31,5 +38,5 @@ export type ParseArgsParams = Readonly<{
          *
          * @default false
          */
-        noHelp: boolean;
+        disableFailureHelp: boolean;
     }>;

@@ -44,9 +44,23 @@ import {type ParsedArg} from './parsed-arg-definition.js';
 export function parseStrippedArgs(
     /** This is mutated as args are popped off and parsed. */
     relevantArgs: string[],
-    argDefinitions: Readonly<ArgDefinitions>,
+    argDefinitionsInput: Readonly<ArgDefinitions>,
     params: Readonly<PartialWithUndefined<ParseArgsParams>> = {},
 ) {
+    const enableHelpFlag = check.hasKey(argDefinitionsInput, 'help') ? false : !params.disableHelp;
+
+    const argDefinitions: ArgDefinitions = enableHelpFlag
+        ? {
+              ...argDefinitionsInput,
+              help: {
+                  description: 'Print this help message.',
+                  flag: {
+                      valueRequirement: FlagRequirement.Blocked,
+                  },
+              },
+          }
+        : argDefinitionsInput;
+
     try {
         const flagArgs: Record<string, MaybeArray<ExpandedFlagArgDefinitionWithValue>> = {};
         /**
@@ -234,10 +248,18 @@ export function parseStrippedArgs(
             }
         });
 
+        if (enableHelpFlag) {
+            if (parsedArgs.help) {
+                process.stdout.write(generateHelpMessage(argDefinitions, params) + '\n');
+                process.exit(0);
+            }
+            delete parsedArgs.help;
+        }
+
         return parsedArgs;
     } catch (error) {
         if (error instanceof InvalidArgError) {
-            if (!params.noHelp) {
+            if (!params.disableFailureHelp) {
                 process.stdout.write(generateHelpMessage(argDefinitions, params) + '\n');
             }
             log.error(extractErrorMessage(error));

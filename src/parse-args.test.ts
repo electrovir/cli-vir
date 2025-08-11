@@ -1,9 +1,12 @@
 import {assert} from '@augment-vir/assert';
-import {type PartialWithUndefined} from '@augment-vir/common';
+import {removeColor, type PartialWithUndefined} from '@augment-vir/common';
+import {interpolationSafeWindowsPath, runShellCommand} from '@augment-vir/node';
 import {describe, it, itCases} from '@augment-vir/test';
+import {basename} from 'node:path';
 import {ArgValueType, FlagRequirement, type ArgDefinitions} from './arg-definition.js';
 import {type ParseArgsParams} from './parse-args-params.js';
 import {parseArgs, parseStrippedArgs} from './parse-args.js';
+import {repoDirPath, scriptMockFilePath} from './repo-paths.mock.js';
 
 enum StringEnum {
     One = 'one',
@@ -150,7 +153,7 @@ describe(parseArgs.name, () => {
     ) {
         // eslint-disable-next-line @typescript-eslint/no-deprecated
         return parseStrippedArgs(relevantArgs, argDefinitions, {
-            noHelp: true,
+            disableFailureHelp: true,
             ...params,
         });
     }
@@ -1710,6 +1713,51 @@ describe(parseArgs.name, () => {
             },
         },
     ]);
+
+    it('exits on help', async () => {
+        const output = await runShellCommand(
+            `tsx ${interpolationSafeWindowsPath(scriptMockFilePath)} --help`,
+            {
+                cwd: repoDirPath,
+            },
+        );
+
+        const stdout = removeColor(output.stdout.toLowerCase());
+
+        assert.strictEquals(output.exitCode, 0);
+        assert.isIn(`name\n    ${basename(scriptMockFilePath)}`, stdout);
+        assert.isNotIn('{ args: {} }'.toLowerCase(), stdout);
+    });
+
+    it('can disable help', async () => {
+        const output = await runShellCommand(
+            `tsx ${interpolationSafeWindowsPath(scriptMockFilePath)} --help --no-help`,
+            {
+                cwd: repoDirPath,
+            },
+        );
+
+        const stdout = removeColor(output.stdout.toLowerCase());
+
+        assert.strictEquals(output.exitCode, 0);
+        assert.isNotIn(`name`, stdout);
+        assert.isIn('{ args: {} }'.toLowerCase(), stdout);
+    });
+
+    it('skips help if already defined', async () => {
+        const output = await runShellCommand(
+            `tsx ${interpolationSafeWindowsPath(scriptMockFilePath)} --insert-help`,
+            {
+                cwd: repoDirPath,
+            },
+        );
+
+        const stdout = removeColor(output.stdout.toLowerCase());
+
+        assert.strictEquals(output.exitCode, 0);
+        assert.isNotIn(`name`, stdout);
+        assert.isIn('{ args: { help: false } }'.toLowerCase(), stdout);
+    });
 
     it('parseArgs emits help on error (coverage for help branch)', () => {
         assert.throws(() =>
