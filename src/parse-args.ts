@@ -32,7 +32,7 @@ import {InvalidArgError} from './errors/invalid-arg.error.js';
 import {UnexpectedInternalError} from './errors/unexpected-internal.error.js';
 import {generateHelpMessage} from './help-message.js';
 import {type ParseArgsParams} from './parse-args-params.js';
-import {type ParsedArg} from './parsed-arg-definition.js';
+import {type ParsedArgs} from './parsed-arg-definition.js';
 
 /**
  * Parses raw args that have already had the leading command args (like `node` or the script name)
@@ -287,7 +287,7 @@ export function parseArgs<const Args extends ArgDefinitions>(
     rawArgs: ReadonlyArray<string>,
     argDefinitions: Args,
     params: ParseArgsParams,
-): ParsedArg<Args> {
+): ParsedArgs<Args> {
     const relevantArgs = extractRelevantArgs({
         binName: params.binName,
         fileName: params.importMeta.filename,
@@ -295,7 +295,7 @@ export function parseArgs<const Args extends ArgDefinitions>(
     });
 
     // eslint-disable-next-line @typescript-eslint/no-deprecated
-    return parseStrippedArgs(relevantArgs, argDefinitions, params) as ParsedArg<Args>;
+    return parseStrippedArgs(relevantArgs, argDefinitions, params) as ParsedArgs<Args>;
 }
 
 function assertValidFlagValue(

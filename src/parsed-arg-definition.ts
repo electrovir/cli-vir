@@ -111,7 +111,7 @@ export type RemoveArgDashes<Key extends PropertyKey> = Key extends `-${infer Res
  *
  * @category Internal
  */
-export type ParsedArg<Args extends ArgDefinitions> = {
+export type ParsedArgs<Args extends ArgDefinitions> = {
     [Key in RemoveArgDashes<keyof Args>]: WithUnion<
         | InverseBoolean<Args[Key]['required']>
         | InverseBoolean<ExtractIfMultiple<Args[Key]>>
