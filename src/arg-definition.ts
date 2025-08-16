@@ -43,12 +43,19 @@ export type FlagArgOptions = PartialWithUndefined<{
  *
  * @category Arg Definition
  */
-export type PositionArgOptions = RequireExactlyOne<{
-    /** The index for this arg's position. */
-    index: number;
-    /** Inserts all remaining positional args into this argument. */
-    rest: true;
-}>;
+export type PositionArgOptions = PartialWithUndefined<{
+    /**
+     * Setting this to `true` will turn off all flag argument parsing after this positional
+     * argument. It will cause all subsequent flag arguments to be parsed as positional arguments.
+     */
+    disableFlags: boolean;
+}> &
+    RequireExactlyOne<{
+        /** The index for this arg's position. */
+        index: number;
+        /** Inserts all remaining positional args into this argument. */
+        rest: true;
+    }>;
 
 /**
  * Accepted primitive arg value types.

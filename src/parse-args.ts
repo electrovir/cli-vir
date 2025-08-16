@@ -72,9 +72,25 @@ export function parseStrippedArgs(
         const expandedArgDefinitions = expandArgDefinitions(argDefinitions);
 
         let rawArg: string | undefined;
+        /**
+         * When true, all subsequent args (even those starting with '-') are treated as positional
+         * arguments. This is enabled after encountering a positional definition with
+         * position.disableFlags set to true.
+         */
+        let flagsDisabled = false;
 
         while ((rawArg = relevantArgs.shift())) {
-            const parsed = parseArg(rawArg);
+            const rawParsed = parseArg(rawArg);
+            /**
+             * If flags have been disabled by a positional, force any '-' prefixed token to be
+             * treated as a positional value.
+             */
+            const parsed =
+                flagsDisabled && rawParsed.flag
+                    ? {
+                          value: rawParsed.value,
+                      }
+                    : rawParsed;
             if (parsed.flag) {
                 const flagDefinition = findArgDefinition(expandedArgDefinitions, {
                     flagName: parsed.flag.name,
@@ -138,6 +154,17 @@ export function parseStrippedArgs(
                             ...positionDefinition,
                             value: rawArg,
                         };
+                    }
+                    /**
+                     * If this positional indicates that flags should be disabled after it, flip the
+                     * switch.
+                     */
+                    if (
+                        check.isObject(positionDefinition.position) &&
+                        check.hasKey(positionDefinition.position, 'disableFlags') &&
+                        positionDefinition.position['disableFlags'] === true
+                    ) {
+                        flagsDisabled = true;
                     }
                 } else if (!params.allowUnexpectedArgs) {
                     throw new InvalidArgError(

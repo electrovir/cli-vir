@@ -168,6 +168,30 @@ describe(parseArgs.name, () => {
             expect: {},
         },
         {
+            it: 'treats flags as positional after a positional with disableFlags',
+            inputs: [
+                [
+                    'start',
+                    '--f',
+                ],
+                {
+                    start: {
+                        position: {
+                            index: 0,
+                            disableFlags: true,
+                        },
+                    },
+                    rest: {
+                        position: {rest: true},
+                    },
+                },
+            ],
+            expect: {
+                start: 'start',
+                rest: ['--f'],
+            },
+        },
+        {
             it: 'parses all remaining args into a rest positional (only arg)',
             inputs: [
                 [

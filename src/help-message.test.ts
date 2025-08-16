@@ -65,6 +65,32 @@ OPTIONS
             `.trim(),
         },
         {
+            it: 'annotates first positional that stops option parsing (disableFlags)',
+            inputs: [
+                (() => {
+                    const defs: any = {
+                        first: {position: 0},
+                        legacy: {position: {index: 1, disableFlags: true}},
+                        later: {position: 2},
+                    };
+                    return defs;
+                })(),
+                {binName: 'legacy-stop'},
+            ],
+            expect: `
+NAME
+    legacy-stop
+
+SYNOPSIS
+    legacy-stop [<first>] [<legacy>] [<later>]
+
+POSITIONAL ARGUMENTS
+    <first>                     (optional; type: string)
+    <legacy>                    (optional; type: string) Stops option parsing; all following arguments are treated as positional.
+    <later>                     (optional; type: string)
+            `.trim(),
+        },
+        {
             it: 'handles empty definitions (only synopsis)',
             inputs: [
                 {},

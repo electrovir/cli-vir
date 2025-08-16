@@ -164,6 +164,7 @@ function formatPositionalSynopsis(pos: PositionArgDefinition & {argName: string}
 }
 
 function renderPositionals(positionals: ExpandedForHelp['position']): string {
+    let includeFlagsNoteAdded = false;
     const lines = positionals.map((pos) => {
         const name = camelCaseToKebabCase(pos.argName);
         const type = describeAllowedType(pos.type);
@@ -181,6 +182,12 @@ function renderPositionals(positionals: ExpandedForHelp['position']): string {
             pos.description,
             metaPortion,
         ].filter(check.isTruthy);
+        if (!includeFlagsNoteAdded && check.isObject(pos.position) && pos.position.disableFlags) {
+            descBits.push(
+                'Stops option parsing; all following arguments are treated as positional.',
+            );
+            includeFlagsNoteAdded = true;
+        }
         const displayName = `<${name}${isRest ? '...' : ''}>`;
         return formatColumns(displayName, descBits.join(' '));
     });
