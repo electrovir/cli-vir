@@ -10,7 +10,7 @@ import {parseArgs} from './parse-args.js';
  */
 export type ParseArgsParams = Readonly<{
     /** The bin name of your npm package, if it exists. For example, `virmator`, `vite`, or `npm`. */
-    binName: string | undefined;
+    binName: string | ReadonlyArray<string> | undefined;
     /**
      * The `import.meta` from the original JavaScript / TypeScript file entry point. This _must_ be
      * passed from the original point script or it won't work.

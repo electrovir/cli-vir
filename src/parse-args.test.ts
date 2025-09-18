@@ -5,7 +5,7 @@ import {describe, it, itCases} from '@augment-vir/test';
 import {basename} from 'node:path';
 import {ArgValueType, FlagRequirement, type ArgDefinitions} from './arg-definition.js';
 import {type ParseArgsParams} from './parse-args-params.js';
-import {parseArgs, parseStrippedArgs} from './parse-args.js';
+import {extractRelevantArgs, parseArgs, parseStrippedArgs} from './parse-args.js';
 import {repoDirPath, scriptMockFilePath} from './repo-paths.mock.js';
 
 enum StringEnum {
@@ -1783,7 +1783,7 @@ describe(parseArgs.name, () => {
         assert.isIn('{ args: { help: false } }'.toLowerCase(), stdout);
     });
 
-    it('parseArgs emits help on error (coverage for help branch)', () => {
+    it('parseArgs emits help on error', () => {
         assert.throws(() =>
             parseArgs(
                 [
@@ -1800,7 +1800,7 @@ describe(parseArgs.name, () => {
         );
     });
 
-    it('throws on invalid argument definition (coverage unreachable assert)', () => {
+    it('throws on invalid argument definition', () => {
         assert.throws(() =>
             parseArgs(
                 [],
@@ -1815,4 +1815,58 @@ describe(parseArgs.name, () => {
             ),
         );
     });
+});
+
+describe(extractRelevantArgs.name, () => {
+    itCases(extractRelevantArgs, [
+        {
+            it: 'fails on empty filename',
+            input: {
+                rawArgs: [],
+                binName: undefined,
+                fileName: '',
+            },
+            throws: {
+                matchMessage: 'no base file name',
+            },
+        },
+        {
+            it: 'supports a binname array 1',
+            input: {
+                rawArgs: [
+                    'ee',
+                    'one',
+                    'two',
+                ],
+                binName: [
+                    'ee',
+                    'export-everything',
+                ],
+                fileName: 'script.ts',
+            },
+            expect: [
+                'one',
+                'two',
+            ],
+        },
+        {
+            it: 'supports a binname array 2',
+            input: {
+                rawArgs: [
+                    'export-everything',
+                    'one',
+                    'two',
+                ],
+                binName: [
+                    'ee',
+                    'export-everything',
+                ],
+                fileName: 'script.ts',
+            },
+            expect: [
+                'one',
+                'two',
+            ],
+        },
+    ]);
 });
