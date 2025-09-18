@@ -1,10 +1,12 @@
-import {check} from '@augment-vir/assert';
+import {check, checkWrap} from '@augment-vir/assert';
 import {
     camelCaseToKebabCase,
+    ensureArray,
     ensureErrorAndPrependMessage,
     extractErrorMessage,
     getObjectTypedEntries,
     getObjectTypedValues,
+    indent,
     removeDuplicates,
     stringify,
     type PartialWithUndefined,
@@ -37,17 +39,20 @@ export function generateHelpMessage(
     > = {},
 ): string {
     try {
-        const commandName = binName || (importMeta && basename(importMeta.filename)) || '';
+        const rawCommandName = binName || (importMeta && basename(importMeta.filename)) || '';
+        const commandNames: ReadonlyArray<string> = rawCommandName
+            ? ensureArray(rawCommandName)
+            : [];
 
         const expanded = expandArgDefinitionsForHelp(args);
 
         const sections: string[] = [];
 
-        const renderedName = renderName(commandName);
+        const renderedName = renderName(commandNames);
         if (renderedName) {
             sections.push(renderedName);
         }
-        sections.push(renderSynopsis(commandName, expanded.position, expanded.flag));
+        sections.push(renderSynopsis(commandNames, expanded.position, expanded.flag));
 
         if (commandDescription) {
             sections.push(renderDescription(commandDescription));
@@ -131,29 +136,34 @@ function cleanArgName(argName: string): string {
     return camelCaseToKebabCase(argName).replaceAll('_', '-');
 }
 
-function renderName(binName: string): string {
-    if (binName) {
-        return `NAME\n    ${binName}`;
+function renderName(binNames: ReadonlyArray<string>): string {
+    if (binNames.length) {
+        return `NAME\n${indent(binNames.join('\n'))}`;
     } else {
         return '';
     }
 }
 
 function renderSynopsis(
-    binName: string,
+    binNames: ReadonlyArray<string>,
     positionals: ExpandedForHelp['position'],
     flags: ExpandedForHelp['flag'],
 ): string {
     const posPart = positionals.map((pos) => formatPositionalSynopsis(pos)).join(' ');
     const flagPart = Object.keys(flags).length ? '[options]' : '';
-    const parts = [
-        binName,
-        flagPart,
-        posPart,
-    ]
-        .filter(check.isTruthy)
-        .join(' ');
-    return `SYNOPSIS\n    ${parts}`.trimEnd();
+
+    const parts = (checkWrap.isLengthAtLeast(binNames, 1) || [''])
+        .map((binName) =>
+            [
+                binName,
+                flagPart,
+                posPart,
+            ]
+                .filter(check.isTruthy)
+                .join(' '),
+        )
+        .join('\n');
+    return `SYNOPSIS\n${indent(parts)}`.trimEnd();
 }
 
 function formatPositionalSynopsis(pos: PositionArgDefinition & {argName: string}): string {

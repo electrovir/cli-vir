@@ -65,6 +65,67 @@ OPTIONS
             `.trim(),
         },
         {
+            it: 'works with a bin name array',
+            inputs: [
+                {
+                    inputFile: {
+                        position: 0,
+                        required: true,
+                        description: 'Path to the input file.',
+                    },
+                    optionalMode: {
+                        position: 1,
+                        description: 'Optional mode toggle.',
+                        type: [
+                            'a',
+                            'b',
+                        ],
+                    },
+                    verbose: {
+                        flag: {
+                            valueRequirement: FlagRequirement.Blocked,
+                            aliases: [
+                                'v',
+                            ],
+                        },
+                        description: 'Increase verbosity.',
+                    },
+                    count: {
+                        flag: {
+                            valueRequirement: FlagRequirement.Required,
+                        },
+                        type: ArgValueType.Number,
+                        description: 'Number of times to run.',
+                    },
+                },
+                {
+                    binName: [
+                        'cli-vir-test',
+                        'cli-vir-test-2',
+                    ],
+                },
+            ],
+            expect: `
+NAME
+    cli-vir-test
+    cli-vir-test-2
+
+SYNOPSIS
+    cli-vir-test [options] <input-file> [<optional-mode>]
+    cli-vir-test-2 [options] <input-file> [<optional-mode>]
+
+POSITIONAL ARGUMENTS
+    <input-file>                Path to the input file. (required; type: string)
+    <optional-mode>             Optional mode toggle. (optional; type: a|b)
+
+OPTIONS
+    (All option keys are case-insensitive; snake_case, camelCase, and kebab-case variants are accepted.)
+
+    --count <number>            Number of times to run.  (type: number; value required)
+    --verbose, -v               Increase verbosity.
+            `.trim(),
+        },
+        {
             it: 'annotates first positional that stops option parsing (disableFlags)',
             inputs: [
                 (() => {
