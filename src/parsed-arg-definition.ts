@@ -1,5 +1,5 @@
 import {type AnyObject, type InverseBoolean, type Values} from '@augment-vir/common';
-import {type IsNever} from 'type-fest';
+import {type IsEqual, type IsNever} from 'type-fest';
 import {
     sanitizeFlagName,
     type ArgDefinition,
@@ -48,13 +48,13 @@ export type ExtractArgTypeWithFlag<Arg extends ArgDefinition> = Arg extends {
           ? ExtractArgType<Arg>
           : ExtractIfMultiple<Arg> extends true
             ? ExtractArgType<Arg> | true
-            : Arg['required'] extends true
+            : IsEqual<Arg['required'], true> extends true
               ? ExtractArgType<Arg> | true
               : ExtractArgType<Arg> | boolean
     : Arg extends {
             flag: true;
         }
-      ? Arg['required'] extends true
+      ? IsEqual<Arg['required'], true> extends true
           ? ExtractArgType<Arg> | true
           : ExtractArgType<Arg> | boolean
       : ExtractArgType<Arg>;
@@ -113,7 +113,7 @@ export type RemoveArgDashes<Key extends PropertyKey> = Key extends `-${infer Res
  */
 export type ParsedArgs<Args extends ArgDefinitions> = {
     [Key in RemoveArgDashes<keyof Args>]: WithUnion<
-        | InverseBoolean<Args[Key]['required']>
+        | InverseBoolean<IsEqual<Args[Key]['required'], true>>
         | InverseBoolean<ExtractIfMultiple<Args[Key]>>
         | InverseBoolean<ExtractIfRest<Args[Key]>>,
         Args[Key] extends {flag: true | AnyObject} ? false : undefined,

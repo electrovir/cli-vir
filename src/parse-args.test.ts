@@ -43,6 +43,11 @@ describe(parseArgs.name, () => {
                 'position0',
             ],
             {
+                maybeRequired: {
+                    position: 6,
+                    required: false as boolean,
+                },
+
                 optionalPositional: {
                     position: 1,
                 },
@@ -126,7 +131,11 @@ describe(parseArgs.name, () => {
         assert.tsType(value.numberEnumPositional).equals<NumberEnum | undefined>();
         assert.tsType(value.numberEnumPositional).notEquals<number | undefined>();
 
+        assert.tsType(value.maybeRequired).equals<string | undefined>();
+
         assert.tsType(value).equals<{
+            maybeRequired: string | undefined;
+
             optionalPositional: string | undefined;
             requiredPositional: string;
             numericPositional: number | undefined;
