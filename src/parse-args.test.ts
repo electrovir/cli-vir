@@ -2,7 +2,7 @@ import {assert} from '@augment-vir/assert';
 import {removeColor, type PartialWithUndefined} from '@augment-vir/common';
 import {interpolationSafeWindowsPath, runShellCommand} from '@augment-vir/node';
 import {describe, it, itCases} from '@augment-vir/test';
-import {basename} from 'node:path';
+import {basename, join, relative} from 'node:path';
 import {ArgValueType, FlagRequirement, type ArgDefinitions} from './arg-definition.js';
 import {type ParseArgsParams} from './parse-args-params.js';
 import {extractRelevantArgs, parseArgs, parseStrippedArgs} from './parse-args.js';
@@ -21,6 +21,39 @@ enum NumberEnum {
 }
 
 describe(parseArgs.name, () => {
+    it('handles args passed to a script', async () => {
+        const scriptFilePath = join(import.meta.dirname, 'run-cli.mock.script.ts');
+
+        const command = [
+            'tsx',
+            relative(process.cwd(), scriptFilePath),
+            '--value=a',
+            "--value='a'",
+            "--value='a=b'",
+            '--value',
+            'a',
+            '--value',
+            "'a'",
+            '--value',
+            "'a=b'",
+        ].join(' ');
+
+        const {stdout} = await runShellCommand(command, {
+            rejectOnError: true,
+        });
+
+        assert.deepEquals(JSON.parse(stdout), {
+            value: [
+                'a',
+                'a',
+                'a=b',
+                'a',
+                'a',
+                'a=b',
+            ],
+        });
+    });
+
     it('has proper types', () => {
         assert.tsType(
             parseArgs(
@@ -175,6 +208,35 @@ describe(parseArgs.name, () => {
                 {},
             ],
             expect: {},
+        },
+        {
+            it: 'handles values with = inside',
+            inputs: [
+                [
+                    '--value=a',
+                    '--value',
+                    'a',
+                    '--value=a=b',
+                    '--value',
+                    'a=b',
+                ],
+                {
+                    value: {
+                        flag: {
+                            allowMultiple: true,
+                            valueRequirement: FlagRequirement.Required,
+                        },
+                    },
+                },
+            ],
+            expect: {
+                value: [
+                    'a',
+                    'a',
+                    'a=b',
+                    'a=b',
+                ],
+            },
         },
         {
             it: 'treats flags as positional after a positional with disableFlags',

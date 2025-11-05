@@ -674,8 +674,10 @@ function parseArg(arg: string): ParsedArgString {
     if (arg.startsWith('-')) {
         const [
             rawFlag = '',
-            flagValue,
-        ] = arg.split('=', 2);
+            ...flagValues
+        ] = arg.split('=');
+
+        const flagValue = flagValues.join('=');
 
         return {
             flag: {

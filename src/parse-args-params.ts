@@ -9,7 +9,11 @@ import {parseArgs} from './parse-args.js';
  * @category Internal
  */
 export type ParseArgsParams = Readonly<{
-    /** The bin name of your npm package, if it exists. For example, `virmator`, `vite`, or `npm`. */
+    /**
+     * The bin name of your npm package, if it exists. For example, `virmator`, `vite`, or `npm`. If
+     * this doesn't exist, and you're only executing a script file directly, just set this to
+     * `undefined`.
+     */
     binName: string | ReadonlyArray<string> | undefined;
     /**
      * The `import.meta` from the original JavaScript / TypeScript file entry point. This _must_ be
