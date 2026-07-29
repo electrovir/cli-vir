@@ -1,5 +1,10 @@
-import {type AnyObject, type InverseBoolean, type Values} from '@augment-vir/common';
-import {type IsEqual, type IsNever} from 'type-fest';
+import {
+    type AnyObject,
+    type InverseBoolean,
+    type IsEqual,
+    type IsNever,
+    type Values,
+} from '@augment-vir/common';
 import {
     sanitizeFlagName,
     type ArgDefinition,

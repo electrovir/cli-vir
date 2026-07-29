@@ -253,7 +253,9 @@ describe(parseArgs.name, () => {
                         },
                     },
                     rest: {
-                        position: {rest: true},
+                        position: {
+                            rest: true,
+                        },
                     },
                 },
             ],
@@ -331,7 +333,9 @@ describe(parseArgs.name, () => {
                     'third',
                 ],
                 {
-                    first: {position: 0},
+                    first: {
+                        position: 0,
+                    },
                     restValues: {
                         position: {
                             rest: true,
@@ -361,7 +365,9 @@ describe(parseArgs.name, () => {
                             rest: true,
                         },
                     },
-                    last: {position: 0},
+                    last: {
+                        position: 0,
+                    },
                 },
             ],
             expect: {
@@ -410,7 +416,9 @@ describe(parseArgs.name, () => {
                     },
                 },
             ],
-            throws: {matchMessage: 'Missing required arg items'},
+            throws: {
+                matchMessage: 'Missing required arg items',
+            },
         },
         {
             it: 'errors if more than one rest positional is declared',
@@ -431,7 +439,9 @@ describe(parseArgs.name, () => {
                     },
                 },
             ],
-            throws: {matchMessage: 'Only one rest positional argument is allowed'},
+            throws: {
+                matchMessage: 'Only one rest positional argument is allowed',
+            },
         },
         /** Basic flag name variations and alias handling ** */
         {
@@ -719,9 +729,19 @@ describe(parseArgs.name, () => {
                     '--blk',
                 ],
                 {
-                    req: {flag: {valueRequirement: FlagRequirement.Required}},
-                    opt: {flag: true},
-                    blk: {flag: {valueRequirement: FlagRequirement.Blocked}},
+                    req: {
+                        flag: {
+                            valueRequirement: FlagRequirement.Required,
+                        },
+                    },
+                    opt: {
+                        flag: true,
+                    },
+                    blk: {
+                        flag: {
+                            valueRequirement: FlagRequirement.Blocked,
+                        },
+                    },
                 },
             ],
             expect: {
@@ -737,7 +757,11 @@ describe(parseArgs.name, () => {
                     '--blk=value',
                 ],
                 {
-                    blk: {flag: {valueRequirement: FlagRequirement.Blocked}},
+                    blk: {
+                        flag: {
+                            valueRequirement: FlagRequirement.Blocked,
+                        },
+                    },
                 },
             ],
             throws: {
@@ -751,7 +775,11 @@ describe(parseArgs.name, () => {
                     '--need=',
                 ],
                 {
-                    need: {flag: {valueRequirement: FlagRequirement.Required}},
+                    need: {
+                        flag: {
+                            valueRequirement: FlagRequirement.Required,
+                        },
+                    },
                 },
             ],
             throws: {
@@ -766,7 +794,11 @@ describe(parseArgs.name, () => {
                     'abc',
                 ],
                 {
-                    name: {flag: {valueRequirement: FlagRequirement.Required}},
+                    name: {
+                        flag: {
+                            valueRequirement: FlagRequirement.Required,
+                        },
+                    },
                 },
             ],
             expect: {
@@ -780,7 +812,9 @@ describe(parseArgs.name, () => {
                     '--myFlag=',
                 ],
                 {
-                    myFlag: {flag: {}},
+                    myFlag: {
+                        flag: {},
+                    },
                 },
             ],
             expect: {
@@ -795,7 +829,11 @@ describe(parseArgs.name, () => {
                     '--single=second',
                 ],
                 {
-                    single: {flag: {valueRequirement: FlagRequirement.Required}},
+                    single: {
+                        flag: {
+                            valueRequirement: FlagRequirement.Required,
+                        },
+                    },
                 },
             ],
             expect: {
@@ -812,7 +850,11 @@ describe(parseArgs.name, () => {
                     '10',
                 ],
                 {
-                    multi: {flag: {allowMultiple: true}},
+                    multi: {
+                        flag: {
+                            allowMultiple: true,
+                        },
+                    },
                 },
             ],
             expect: {
@@ -839,7 +881,9 @@ describe(parseArgs.name, () => {
                     },
                 },
             ],
-            throws: {matchMessage: 'Missing required flag value'},
+            throws: {
+                matchMessage: 'Missing required flag value',
+            },
         },
         {
             it: 'multi blocked flag errors if any occurrence has a value',
@@ -857,7 +901,9 @@ describe(parseArgs.name, () => {
                     },
                 },
             ],
-            throws: {matchMessage: 'arg does not allow a value'},
+            throws: {
+                matchMessage: 'arg does not allow a value',
+            },
         },
         {
             it: 'parses number flag value',
@@ -867,12 +913,16 @@ describe(parseArgs.name, () => {
                 ],
                 {
                     count: {
-                        flag: {valueRequirement: FlagRequirement.Required},
+                        flag: {
+                            valueRequirement: FlagRequirement.Required,
+                        },
                         type: ArgValueType.Number,
                     },
                 },
             ],
-            expect: {count: 42},
+            expect: {
+                count: 42,
+            },
         },
         {
             it: 'errors on invalid number',
@@ -882,12 +932,16 @@ describe(parseArgs.name, () => {
                 ],
                 {
                     count: {
-                        flag: {valueRequirement: FlagRequirement.Required},
+                        flag: {
+                            valueRequirement: FlagRequirement.Required,
+                        },
                         type: ArgValueType.Number,
                     },
                 },
             ],
-            throws: {matchMessage: 'Expected a number'},
+            throws: {
+                matchMessage: 'Expected a number',
+            },
         },
         {
             it: 'parses boolean flag explicit true/false',
@@ -898,16 +952,23 @@ describe(parseArgs.name, () => {
                 ],
                 {
                     truthy: {
-                        flag: {valueRequirement: FlagRequirement.Required},
+                        flag: {
+                            valueRequirement: FlagRequirement.Required,
+                        },
                         type: ArgValueType.Boolean,
                     },
                     falsy: {
-                        flag: {valueRequirement: FlagRequirement.Required},
+                        flag: {
+                            valueRequirement: FlagRequirement.Required,
+                        },
                         type: ArgValueType.Boolean,
                     },
                 },
             ],
-            expect: {truthy: true, falsy: false},
+            expect: {
+                truthy: true,
+                falsy: false,
+            },
         },
         {
             it: 'rejects invalid boolean',
@@ -917,7 +978,9 @@ describe(parseArgs.name, () => {
                 ],
                 {
                     bool: {
-                        flag: {valueRequirement: FlagRequirement.Required},
+                        flag: {
+                            valueRequirement: FlagRequirement.Required,
+                        },
                         type: ArgValueType.Boolean,
                     },
                 },
@@ -935,16 +998,23 @@ describe(parseArgs.name, () => {
                 ],
                 {
                     stringEnum: {
-                        flag: {valueRequirement: FlagRequirement.Required},
+                        flag: {
+                            valueRequirement: FlagRequirement.Required,
+                        },
                         type: StringEnum,
                     },
                     numberEnum: {
-                        flag: {valueRequirement: FlagRequirement.Required},
+                        flag: {
+                            valueRequirement: FlagRequirement.Required,
+                        },
                         type: NumberEnum,
                     },
                 },
             ],
-            expect: {stringEnum: 'two', numberEnum: 1},
+            expect: {
+                stringEnum: 'two',
+                numberEnum: 1,
+            },
         },
         {
             it: 'errors when enum value invalid',
@@ -954,12 +1024,16 @@ describe(parseArgs.name, () => {
                 ],
                 {
                     stringEnum: {
-                        flag: {valueRequirement: FlagRequirement.Required},
+                        flag: {
+                            valueRequirement: FlagRequirement.Required,
+                        },
                         type: StringEnum,
                     },
                 },
             ],
-            throws: {matchMessage: 'Expected one of'},
+            throws: {
+                matchMessage: 'Expected one of',
+            },
         },
         {
             it: 'parses array allowed values (string and number)',
@@ -970,14 +1044,18 @@ describe(parseArgs.name, () => {
                 ],
                 {
                     list: {
-                        flag: {valueRequirement: FlagRequirement.Required},
+                        flag: {
+                            valueRequirement: FlagRequirement.Required,
+                        },
                         type: [
                             'a',
                             'b',
                         ],
                     },
                     numList: {
-                        flag: {valueRequirement: FlagRequirement.Required},
+                        flag: {
+                            valueRequirement: FlagRequirement.Required,
+                        },
                         type: [
                             1,
                             2,
@@ -985,7 +1063,10 @@ describe(parseArgs.name, () => {
                     },
                 },
             ],
-            expect: {list: 'a', numList: 2},
+            expect: {
+                list: 'a',
+                numList: 2,
+            },
         },
         {
             it: 'errors on invalid array allowed value',
@@ -995,7 +1076,9 @@ describe(parseArgs.name, () => {
                 ],
                 {
                     list: {
-                        flag: {valueRequirement: FlagRequirement.Required},
+                        flag: {
+                            valueRequirement: FlagRequirement.Required,
+                        },
                         type: [
                             'a',
                             'b',
@@ -1003,7 +1086,9 @@ describe(parseArgs.name, () => {
                     },
                 },
             ],
-            throws: {matchMessage: 'Expected one of'},
+            throws: {
+                matchMessage: 'Expected one of',
+            },
         },
         {
             it: 'supports flag aliases explicitly provided',
@@ -1014,11 +1099,16 @@ describe(parseArgs.name, () => {
                 ],
                 {
                     fullName: {
-                        flag: {valueRequirement: FlagRequirement.Required, aliases: ['f']},
+                        flag: {
+                            valueRequirement: FlagRequirement.Required,
+                            aliases: ['f'],
+                        },
                     },
                 },
             ],
-            expect: {fullName: 'value'},
+            expect: {
+                fullName: 'value',
+            },
         },
         {
             it: 'supports automatically expanded kebab/snake/camel aliases',
@@ -1029,7 +1119,11 @@ describe(parseArgs.name, () => {
                     '--autoAlias',
                 ],
                 {
-                    autoAlias: {flag: {allowMultiple: true}},
+                    autoAlias: {
+                        flag: {
+                            allowMultiple: true,
+                        },
+                    },
                 },
             ],
             expect: {
@@ -1072,9 +1166,15 @@ describe(parseArgs.name, () => {
                     'real-second',
                 ],
                 {
-                    one: {position: 0},
-                    two: {position: 1},
-                    three: {position: 2},
+                    one: {
+                        position: 0,
+                    },
+                    two: {
+                        position: 1,
+                    },
+                    three: {
+                        position: 2,
+                    },
                     flag: {
                         flag: {
                             allowMultiple: true,
@@ -1099,11 +1199,19 @@ describe(parseArgs.name, () => {
                     'onlyOne',
                 ],
                 {
-                    first: {position: 0, required: true},
-                    second: {position: 1, required: true},
+                    first: {
+                        position: 0,
+                        required: true,
+                    },
+                    second: {
+                        position: 1,
+                        required: true,
+                    },
                 },
             ],
-            throws: {matchMessage: 'Missing required arg'},
+            throws: {
+                matchMessage: 'Missing required arg',
+            },
         },
         {
             it: 'rejects missing required flag',
@@ -1134,7 +1242,11 @@ describe(parseArgs.name, () => {
                     '--real=value',
                 ],
                 {
-                    '--real': {flag: {valueRequirement: FlagRequirement.Required}},
+                    '--real': {
+                        flag: {
+                            valueRequirement: FlagRequirement.Required,
+                        },
+                    },
                 },
             ],
             expect: {
@@ -1149,11 +1261,20 @@ describe(parseArgs.name, () => {
                     'pos',
                 ],
                 {
-                    blk: {flag: {valueRequirement: FlagRequirement.Blocked}},
-                    pos: {position: 0},
+                    blk: {
+                        flag: {
+                            valueRequirement: FlagRequirement.Blocked,
+                        },
+                    },
+                    pos: {
+                        position: 0,
+                    },
                 },
             ],
-            expect: {blk: true, pos: 'pos'},
+            expect: {
+                blk: true,
+                pos: 'pos',
+            },
         },
         {
             it: 'blocked multi flags still parse separate occurrences',
@@ -1222,7 +1343,9 @@ describe(parseArgs.name, () => {
                     },
                 },
             ],
-            throws: {matchMessage: 'Expected a number'},
+            throws: {
+                matchMessage: 'Expected a number',
+            },
         },
         {
             it: 'accepts valid string enum positional',
@@ -1334,7 +1457,9 @@ describe(parseArgs.name, () => {
                 ],
                 {
                     numberEnum: {
-                        flag: {valueRequirement: FlagRequirement.Required},
+                        flag: {
+                            valueRequirement: FlagRequirement.Required,
+                        },
                         type: NumberEnum,
                     },
                 },
@@ -1367,7 +1492,10 @@ describe(parseArgs.name, () => {
                     'Three',
                 ],
                 {
-                    posNum: {position: 0, type: NumberEnum},
+                    posNum: {
+                        position: 0,
+                        type: NumberEnum,
+                    },
                 },
             ],
             expect: {
@@ -1381,10 +1509,15 @@ describe(parseArgs.name, () => {
                     '6',
                 ],
                 {
-                    posNum: {position: 0, type: NumberEnum},
+                    posNum: {
+                        position: 0,
+                        type: NumberEnum,
+                    },
                 },
             ],
-            throws: {matchMessage: 'Expected one of'},
+            throws: {
+                matchMessage: 'Expected one of',
+            },
         },
         {
             it: 'accepts object-of-values (strings) for flag',
@@ -1475,7 +1608,10 @@ describe(parseArgs.name, () => {
                 {
                     numObj: {
                         flag: true,
-                        type: {ten: 10, eleven: 11},
+                        type: {
+                            ten: 10,
+                            eleven: 11,
+                        },
                     },
                 },
             ],
@@ -1492,7 +1628,10 @@ describe(parseArgs.name, () => {
                 {
                     posObj: {
                         position: 0,
-                        type: {first: 'alpha', second: 'beta'},
+                        type: {
+                            first: 'alpha',
+                            second: 'beta',
+                        },
                     },
                 },
             ],
@@ -1507,7 +1646,13 @@ describe(parseArgs.name, () => {
                     'gamma',
                 ],
                 {
-                    posObj: {position: 0, type: {first: 'alpha', second: 'beta'}},
+                    posObj: {
+                        position: 0,
+                        type: {
+                            first: 'alpha',
+                            second: 'beta',
+                        },
+                    },
                 },
             ],
             throws: {
@@ -1835,7 +1980,7 @@ describe(parseArgs.name, () => {
         const stdout = removeColor(output.stdout.toLowerCase());
 
         assert.strictEquals(output.exitCode, 0);
-        assert.isNotIn(`name`, stdout);
+        assert.isNotIn('name', stdout);
         assert.isIn('{ args: {} }'.toLowerCase(), stdout);
     });
 
@@ -1850,7 +1995,7 @@ describe(parseArgs.name, () => {
         const stdout = removeColor(output.stdout.toLowerCase());
 
         assert.strictEquals(output.exitCode, 0);
-        assert.isNotIn(`name`, stdout);
+        assert.isNotIn('name', stdout);
         assert.isIn('{ args: { help: false } }'.toLowerCase(), stdout);
     });
 
@@ -1861,7 +2006,9 @@ describe(parseArgs.name, () => {
                     '--unknownFlag',
                 ],
                 {
-                    known: {flag: true},
+                    known: {
+                        flag: true,
+                    },
                 },
                 {
                     binName: 'bin-name',
@@ -1876,8 +2023,10 @@ describe(parseArgs.name, () => {
             parseArgs(
                 [],
                 {
-                    // @ts-expect-error: intentionally invalid to reach assert.never branch
-                    invalidDef: {notFlag: true},
+                    invalidDef: {
+                        // @ts-expect-error: intentionally invalid to reach assert.never branch
+                        notFlag: true,
+                    },
                 },
                 {
                     binName: undefined,

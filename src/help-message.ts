@@ -69,7 +69,9 @@ export function generateHelpMessage(
     } catch (error) {
         throw new UnexpectedInternalError(
             extractErrorMessage(ensureErrorAndPrependMessage(error, 'Help message failed')),
-            {cause: error},
+            {
+                cause: error,
+            },
         );
     }
 }
@@ -109,7 +111,10 @@ function expandArgDefinitionsForHelp(args: ArgDefinitions): ExpandedForHelp {
                     aliases: flagOptions.aliases || [],
                 };
             } else {
-                position.push({...argDefinition, argName});
+                position.push({
+                    ...argDefinition,
+                    argName,
+                });
                 position.sort((a, b) => {
                     const aIndex =
                         check.isObject(a.position) && 'rest' in a.position
@@ -129,7 +134,10 @@ function expandArgDefinitionsForHelp(args: ArgDefinitions): ExpandedForHelp {
         },
     );
 
-    return {position, flag};
+    return {
+        position,
+        flag,
+    };
 }
 
 function cleanArgName(argName: string): string {
@@ -319,13 +327,13 @@ function describeAllowedType(type: AllowedArgType | undefined): string {
     }
 }
 
+// eslint-disable-next-line @virmator/prefer-params-object
 function formatColumns(left: string, right: string): string {
     /** Typical man page left column width. */
     const padWidth = 28;
     if (!right) {
         return '    ' + left;
-    }
-    if (left.length >= padWidth - 2) {
+    } else if (left.length >= padWidth - 2) {
         /** Put description on next line. */
         return '    ' + left + '\n' + ' '.repeat(padWidth) + right.trim();
     }

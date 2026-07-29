@@ -20,4 +20,6 @@ const args = parseArgs(
     },
 );
 
-console.info({args});
+console.info({
+    args,
+});

@@ -14,10 +14,10 @@ import {
     type MaybeArray,
     type Overwrite,
     type PartialWithUndefined,
+    type RequireExactlyOne,
     type SetRequiredAndNotNull,
 } from '@augment-vir/common';
 import {basename} from 'node:path';
-import {type RequireExactlyOne} from 'type-fest';
 import {
     ArgValueType,
     FlagRequirement,
@@ -295,7 +295,9 @@ export function parseStrippedArgs(
         } else {
             throw new UnexpectedInternalError(
                 extractErrorMessage(ensureErrorAndPrependMessage(error, 'Failed to parse args')),
-                {cause: error},
+                {
+                    cause: error,
+                },
             );
         }
     }

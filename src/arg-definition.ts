@@ -1,5 +1,4 @@
-import {type PartialWithUndefined} from '@augment-vir/common';
-import {type RequireExactlyOne} from 'type-fest';
+import {type PartialWithUndefined, type RequireExactlyOne} from '@augment-vir/common';
 
 /**
  * Value requirements for flag arguments.

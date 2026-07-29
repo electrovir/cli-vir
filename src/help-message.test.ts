@@ -130,13 +130,24 @@ OPTIONS
             inputs: [
                 (() => {
                     const defs: any = {
-                        first: {position: 0},
-                        legacy: {position: {index: 1, disableFlags: true}},
-                        later: {position: 2},
+                        first: {
+                            position: 0,
+                        },
+                        legacy: {
+                            position: {
+                                index: 1,
+                                disableFlags: true,
+                            },
+                        },
+                        later: {
+                            position: 2,
+                        },
                     };
                     return defs;
                 })(),
-                {binName: 'legacy-stop'},
+                {
+                    binName: 'legacy-stop',
+                },
             ],
             expect: `
 NAME
@@ -155,7 +166,10 @@ POSITIONAL ARGUMENTS
             it: 'handles empty definitions (only synopsis)',
             inputs: [
                 {},
-                {binName: 'empty-bin', commandDescription: undefined},
+                {
+                    binName: 'empty-bin',
+                    commandDescription: undefined,
+                },
             ],
             expect: `
 NAME
@@ -212,7 +226,9 @@ DESCRIPTION
                         description: 'Apple.',
                     },
                 },
-                {binName: 'alias-test'},
+                {
+                    binName: 'alias-test',
+                },
             ],
             expect: `
 NAME
@@ -235,11 +251,15 @@ OPTIONS
             inputs: [
                 {
                     longLongLongLongLongLongLongLongLongName: {
-                        flag: {valueRequirement: FlagRequirement.Required},
+                        flag: {
+                            valueRequirement: FlagRequirement.Required,
+                        },
                         required: true,
                     },
                 },
-                {binName: 'wrap-meta'},
+                {
+                    binName: 'wrap-meta',
+                },
             ],
             expect: `
 NAME
@@ -260,12 +280,20 @@ OPTIONS
             inputs: [
                 {
                     boolFlag: {
-                        flag: {valueRequirement: FlagRequirement.Required},
+                        flag: {
+                            valueRequirement: FlagRequirement.Required,
+                        },
                         type: ArgValueType.Boolean,
                     },
-                    strFlag: {flag: {valueRequirement: FlagRequirement.Optional}},
+                    strFlag: {
+                        flag: {
+                            valueRequirement: FlagRequirement.Optional,
+                        },
+                    },
                 },
-                {binName: 'primitive-meta'},
+                {
+                    binName: 'primitive-meta',
+                },
             ],
             expect: `
 NAME
@@ -285,9 +313,14 @@ OPTIONS
             it: 'renders a command description section',
             inputs: [
                 {
-                    input: {position: 0},
+                    input: {
+                        position: 0,
+                    },
                 },
-                {binName: 'with-desc', commandDescription: 'A helpful one-line description.'},
+                {
+                    binName: 'with-desc',
+                    commandDescription: 'A helpful one-line description.',
+                },
             ],
             expect: `
 NAME
@@ -307,7 +340,10 @@ POSITIONAL ARGUMENTS
             it: 'renders a multi-line command description section',
             inputs: [
                 {
-                    input: {position: 0, required: true},
+                    input: {
+                        position: 0,
+                        required: true,
+                    },
                 },
                 {
                     binName: 'with-multiline-desc',
@@ -509,7 +545,9 @@ OPTIONS
                         position: 1,
                     },
                 },
-                {binName: 'pos-only'},
+                {
+                    binName: 'pos-only',
+                },
             ],
             expect: `
 NAME
@@ -528,15 +566,21 @@ POSITIONAL ARGUMENTS
             inputs: [
                 {
                     requiredFlag: {
-                        flag: {valueRequirement: FlagRequirement.Required},
+                        flag: {
+                            valueRequirement: FlagRequirement.Required,
+                        },
                         required: true,
                         description: 'Required flag description.',
                     },
                     loneBlocked: {
-                        flag: {valueRequirement: FlagRequirement.Blocked},
+                        flag: {
+                            valueRequirement: FlagRequirement.Blocked,
+                        },
                     },
                 },
-                {binName: 'flags-only'},
+                {
+                    binName: 'flags-only',
+                },
             ],
             expect: `
 NAME
@@ -607,7 +651,9 @@ OPTIONS
                     },
                 },
             ],
-            throws: {matchMessage: 'Unexpected arg value type'},
+            throws: {
+                matchMessage: 'Unexpected arg value type',
+            },
         },
         {
             it: 'throws on invalid flag primitive type',
@@ -620,19 +666,25 @@ OPTIONS
                     },
                 },
             ],
-            throws: {matchMessage: 'Unexpected arg value type'},
+            throws: {
+                matchMessage: 'Unexpected arg value type',
+            },
         },
         {
             it: 'renders optional number flag type and value optional meta',
             inputs: [
                 {
                     optNum: {
-                        flag: {valueRequirement: FlagRequirement.Optional},
+                        flag: {
+                            valueRequirement: FlagRequirement.Optional,
+                        },
                         type: ArgValueType.Number,
                         description: 'Optional number flag.',
                     },
                 },
-                {binName: 'optional-meta'},
+                {
+                    binName: 'optional-meta',
+                },
             ],
             expect: `
 NAME
@@ -651,11 +703,26 @@ OPTIONS
             it: 'sorts mixed positional index definitions',
             inputs: [
                 {
-                    zero: {position: 0, description: 'Zero.'},
-                    two: {position: {index: 2}, description: 'Two.'},
-                    one: {position: {index: 1}, description: 'One.'},
+                    zero: {
+                        position: 0,
+                        description: 'Zero.',
+                    },
+                    two: {
+                        position: {
+                            index: 2,
+                        },
+                        description: 'Two.',
+                    },
+                    one: {
+                        position: {
+                            index: 1,
+                        },
+                        description: 'One.',
+                    },
                 },
-                {binName: 'mixed-pos'},
+                {
+                    binName: 'mixed-pos',
+                },
             ],
             expect: `
 NAME
@@ -674,11 +741,24 @@ POSITIONAL ARGUMENTS
             it: 'renders rest positional last with rest meta',
             inputs: [
                 {
-                    first: {position: 0, description: 'First.'},
-                    restItems: {position: {rest: true}, description: 'Remaining items.'},
-                    middle: {position: 1, description: 'Middle.'},
+                    first: {
+                        position: 0,
+                        description: 'First.',
+                    },
+                    restItems: {
+                        position: {
+                            rest: true,
+                        },
+                        description: 'Remaining items.',
+                    },
+                    middle: {
+                        position: 1,
+                        description: 'Middle.',
+                    },
                 },
-                {binName: 'rest-pos'},
+                {
+                    binName: 'rest-pos',
+                },
             ],
             expect: `
 NAME
