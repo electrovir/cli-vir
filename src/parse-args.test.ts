@@ -2000,8 +2000,8 @@ describe(parseArgs.name, () => {
     });
 
     it('parseArgs emits help on error', () => {
-        assert.throws(() =>
-            parseArgs(
+        assert.throws(() => {
+            return parseArgs(
                 [
                     '--unknownFlag',
                 ],
@@ -2014,13 +2014,13 @@ describe(parseArgs.name, () => {
                     binName: 'bin-name',
                     importMeta: import.meta,
                 },
-            ),
-        );
+            );
+        });
     });
 
     it('throws on invalid argument definition', () => {
-        assert.throws(() =>
-            parseArgs(
+        assert.throws(() => {
+            return parseArgs(
                 [],
                 {
                     invalidDef: {
@@ -2032,8 +2032,8 @@ describe(parseArgs.name, () => {
                     binName: undefined,
                     importMeta: import.meta,
                 },
-            ),
-        );
+            );
+        });
     });
 });
 

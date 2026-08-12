@@ -161,15 +161,15 @@ function renderSynopsis(
     const flagPart = Object.keys(flags).length ? '[options]' : '';
 
     const parts = (checkWrap.isLengthAtLeast(binNames, 1) || [''])
-        .map((binName) =>
-            [
+        .map((binName) => {
+            return [
                 binName,
                 flagPart,
                 posPart,
             ]
                 .filter(check.isTruthy)
-                .join(' '),
-        )
+                .join(' ');
+        })
         .join('\n');
     return `SYNOPSIS\n${indent(parts)}`.trimEnd();
 }
@@ -213,20 +213,20 @@ function renderPositionals(positionals: ExpandedForHelp['position']): string {
 }
 
 function renderOptions(flags: ExpandedForHelp['flag']): string {
-    const flagDefinitions = getObjectTypedValues(flags).sort((a, b) =>
-        a.argName.localeCompare(b.argName),
-    );
+    const flagDefinitions = getObjectTypedValues(flags).sort((a, b) => {
+        return a.argName.localeCompare(b.argName);
+    });
 
     const lines = flagDefinitions.map((flagDefinition) => {
         const aliases = removeDuplicates([
             cleanArgName(flagDefinition.argName),
             ...flagDefinition.aliases,
-        ]).map((alias) =>
-            [
+        ]).map((alias) => {
+            return [
                 alias.length === 1 ? '-' : '--',
                 alias,
-            ].join(''),
-        );
+            ].join('');
+        });
         const name = aliases.join(', ');
         const valuePart = formatValuePart(flagDefinition);
         const meta: string[] = [];

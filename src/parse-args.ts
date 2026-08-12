@@ -201,15 +201,15 @@ export function parseStrippedArgs(
                 if (flagArg || (positionArg && check.isArray(positionArg))) {
                     if (flagArg && check.isArray(flagArg)) {
                         assert.isArray(value, 'Invalid non-array value for multi flag.');
-                        value.forEach((innerValue, index) =>
-                            assertValidFlagValue(
+                        value.forEach((innerValue, index) => {
+                            return assertValidFlagValue(
                                 assertWrap.isDefined(
                                     flagArg[index],
                                     'Failed to find matching arg definition for arg value index.',
                                 ),
                                 innerValue,
-                            ),
-                        );
+                            );
+                        });
                     } else if (flagArg && !check.isArray(flagArg)) {
                         assert.isNotArray(value, 'Invalid array value for non-multi flag.');
                         assertValidFlagValue(flagArg, value);
