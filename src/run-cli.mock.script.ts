@@ -13,6 +13,7 @@ const args = parseArgs(
     },
     {
         binName: undefined,
+        packageJsonPath: undefined,
         importMeta: import.meta,
     },
 );

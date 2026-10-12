@@ -17,6 +17,7 @@ import {
     type RequireExactlyOne,
     type SetRequiredAndNotNull,
 } from '@augment-vir/common';
+import {readFileSync} from 'node:fs';
 import {basename} from 'node:path';
 import {
     ArgValueType,
@@ -49,17 +50,32 @@ export function parseStrippedArgs(
 ) {
     const enableHelpFlag = check.hasKey(argDefinitionsInput, 'help') ? false : !params.disableHelp;
 
-    const argDefinitions: ArgDefinitions = enableHelpFlag
-        ? {
-              ...argDefinitionsInput,
-              help: {
-                  description: 'Print this help message.',
-                  flag: {
-                      valueRequirement: FlagRequirement.Blocked,
+    const packageJsonPath =
+        (check.hasKey(argDefinitionsInput, 'version') && params.packageJsonPath) || undefined;
+
+    const argDefinitions: ArgDefinitions = {
+        ...argDefinitionsInput,
+        ...(enableHelpFlag
+            ? {
+                  help: {
+                      description: 'Print this help message.',
+                      flag: {
+                          valueRequirement: FlagRequirement.Blocked,
+                      },
                   },
-              },
-          }
-        : argDefinitionsInput;
+              }
+            : {}),
+        ...(packageJsonPath
+            ? {
+                  version: {
+                      description: 'Print the version.',
+                      flag: {
+                          valueRequirement: FlagRequirement.Blocked,
+                      },
+                  },
+              }
+            : {}),
+    };
 
     try {
         const flagArgs: Record<string, MaybeArray<ExpandedFlagArgDefinitionWithValue>> = {};
@@ -283,6 +299,14 @@ export function parseStrippedArgs(
             delete parsedArgs.help;
         }
 
+        if (packageJsonPath) {
+            if (parsedArgs.version) {
+                process.stdout.write(readPackageVersion(packageJsonPath) + '\n');
+                process.exit(0);
+            }
+            delete parsedArgs.version;
+        }
+
         return parsedArgs;
     } catch (error) {
         if (error instanceof InvalidArgError) {
@@ -393,6 +417,21 @@ export function parseArgs<const Args extends ArgDefinitions>(
 
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     return parseStrippedArgs(relevantArgs, argDefinitions, params) as ParsedArgs<Args>;
+}
+
+function readPackageVersion(packageJsonPath: string) {
+    /** This must be a sync read to keep `parseArgs` synchronous. */
+    const packageJson: unknown = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
+
+    if (
+        check.isObject(packageJson) &&
+        check.hasKey(packageJson, 'version') &&
+        check.isString(packageJson.version)
+    ) {
+        return packageJson.version;
+    } else {
+        throw new Error(`No version found in '${packageJsonPath}'.`);
+    }
 }
 
 function assertValidFlagValue(

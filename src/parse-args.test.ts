@@ -1,6 +1,6 @@
-import {assert} from '@augment-vir/assert';
+import {assert, assertWrap} from '@augment-vir/assert';
 import {removeColor, type PartialWithUndefined} from '@augment-vir/common';
-import {interpolationSafeWindowsPath, runShellCommand} from '@augment-vir/node';
+import {interpolationSafeWindowsPath, readPackageJson, runShellCommand} from '@augment-vir/node';
 import {describe, it, itCases} from '@augment-vir/test';
 import {basename, join, relative} from 'node:path';
 import {ArgValueType, FlagRequirement, type ArgDefinitions} from './arg-definition.js';
@@ -61,6 +61,7 @@ describe(parseArgs.name, () => {
                 {},
                 {
                     binName: undefined,
+                    packageJsonPath: undefined,
                     importMeta: import.meta,
                 },
             ),
@@ -157,6 +158,7 @@ describe(parseArgs.name, () => {
             },
             {
                 binName: undefined,
+                packageJsonPath: undefined,
                 importMeta: import.meta,
             },
         );
@@ -1999,6 +2001,33 @@ describe(parseArgs.name, () => {
         assert.isIn('{ args: { help: false } }'.toLowerCase(), stdout);
     });
 
+    it('exits on version', async () => {
+        const output = await runShellCommand(
+            `tsx ${interpolationSafeWindowsPath(scriptMockFilePath)} --version`,
+            {
+                cwd: repoDirPath,
+            },
+        );
+
+        assert.strictEquals(output.exitCode, 0);
+        assert.strictEquals(
+            output.stdout.trim(),
+            assertWrap.isDefined((await readPackageJson(repoDirPath)).version),
+        );
+    });
+
+    it('can disable version', async () => {
+        const output = await runShellCommand(
+            `tsx ${interpolationSafeWindowsPath(scriptMockFilePath)} --version --no-version`,
+            {
+                cwd: repoDirPath,
+            },
+        );
+
+        assert.strictEquals(output.exitCode, 0);
+        assert.isIn('{ args: {} }', removeColor(output.stdout.toLowerCase()));
+    });
+
     it('parseArgs emits help on error', () => {
         assert.throws(() => {
             return parseArgs(
@@ -2012,6 +2041,7 @@ describe(parseArgs.name, () => {
                 },
                 {
                     binName: 'bin-name',
+                    packageJsonPath: undefined,
                     importMeta: import.meta,
                 },
             );
@@ -2030,6 +2060,7 @@ describe(parseArgs.name, () => {
                 },
                 {
                     binName: undefined,
+                    packageJsonPath: undefined,
                     importMeta: import.meta,
                 },
             );

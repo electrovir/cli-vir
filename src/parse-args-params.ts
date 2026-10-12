@@ -16,6 +16,11 @@ export type ParseArgsParams = Readonly<{
      */
     binName: string | ReadonlyArray<string> | undefined;
     /**
+     * Absolute path to your package's `package.json` file. Its `version` is printed by the
+     * automatic `--version` flag. Set this to `undefined` to disable the `--version` flag.
+     */
+    packageJsonPath: string | undefined;
+    /**
      * The `import.meta` from the original JavaScript / TypeScript file entry point. This _must_ be
      * passed from the original point script or it won't work.
      */

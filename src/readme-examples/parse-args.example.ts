@@ -1,3 +1,4 @@
+import {resolve} from 'node:path';
 import {FlagRequirement, parseArgs} from '../index.js';
 
 const myArgs = parseArgs(
@@ -23,6 +24,8 @@ const myArgs = parseArgs(
     {
         /** The binName for your package, if relevant. */
         binName: 'cli-vir',
+        /** Your package's package.json, used for the `--version` flag. Can be `undefined`. */
+        packageJsonPath: resolve(import.meta.dirname, '..', 'package.json'),
         /**
          * Make sure this `import.meta` is accessed in your top level JavaScript/TypeScript file
          * that is being executed.
