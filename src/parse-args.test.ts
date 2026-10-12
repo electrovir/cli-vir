@@ -1768,7 +1768,7 @@ describe(parseArgs.name, () => {
                 {
                     arr: {
                         // @ts-expect-error: intentionally invalid type value
-                        type: 'purple',
+                        type: 'purple', // eslint-disable-line @typescript-eslint/no-unsafe-enum-assignment
                         position: {
                             index: 0,
                         },
@@ -2026,6 +2026,54 @@ describe(parseArgs.name, () => {
 
         assert.strictEquals(output.exitCode, 0);
         assert.isIn('{ args: {} }', removeColor(output.stdout.toLowerCase()));
+    });
+
+    it('skips version if already defined', () => {
+        assert.deepEquals(
+            parseArgs(
+                [
+                    'parse-args.test.ts',
+                    '--version',
+                ],
+                {
+                    version: {
+                        flag: {
+                            valueRequirement: FlagRequirement.Blocked,
+                        },
+                    },
+                },
+                {
+                    binName: undefined,
+                    packageJsonPath: join(repoDirPath, 'package.json'),
+                    importMeta: import.meta,
+                },
+            ),
+            {
+                version: true,
+            },
+        );
+    });
+
+    it('throws on a package.json without a version', () => {
+        assert.throws(
+            () => {
+                return parseArgs(
+                    [
+                        'parse-args.test.ts',
+                        '--version',
+                    ],
+                    {},
+                    {
+                        binName: undefined,
+                        packageJsonPath: join(repoDirPath, 'configs', 'c8.config.json'),
+                        importMeta: import.meta,
+                    },
+                );
+            },
+            {
+                matchMessage: 'No version found',
+            },
+        );
     });
 
     it('parseArgs emits help on error', () => {

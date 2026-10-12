@@ -48,10 +48,10 @@ export function parseStrippedArgs(
     argDefinitionsInput: Readonly<ArgDefinitions>,
     params: Readonly<PartialWithUndefined<ParseArgsParams>> = {},
 ) {
-    const enableHelpFlag = check.hasKey(argDefinitionsInput, 'help') ? false : !params.disableHelp;
+    const enableHelpFlag = !check.hasKey(argDefinitionsInput, 'help') && !params.disableHelp;
 
     const packageJsonPath =
-        (check.hasKey(argDefinitionsInput, 'version') && params.packageJsonPath) || undefined;
+        (!check.hasKey(argDefinitionsInput, 'version') && params.packageJsonPath) || undefined;
 
     const argDefinitions: ArgDefinitions = {
         ...argDefinitionsInput,
@@ -380,11 +380,9 @@ export function extractRelevantArgs({rawArgs, binName, fileName}: Readonly<Relev
     const lastIrrelevantArgIndex = rawArgs.findIndex((arg) => {
         const baseArgName = basename(arg);
         const matchesFileName = baseArgName === baseFileName;
-        const matchesBinName = check.isString(binName)
-            ? baseArgName === binName
-            : check.isArray(binName)
-              ? binName.includes(baseArgName)
-              : false;
+        const matchesBinName =
+            (check.isString(binName) && baseArgName === binName) ||
+            (check.isArray(binName) && binName.includes(baseArgName));
         return matchesFileName || matchesBinName;
     });
 

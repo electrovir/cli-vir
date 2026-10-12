@@ -646,7 +646,7 @@ OPTIONS
                 {
                     badType: {
                         // @ts-expect-error: intentional invalid type to cover error branch
-                        type: 'purple',
+                        type: 'purple', // eslint-disable-line @typescript-eslint/no-unsafe-enum-assignment
                         position: 0,
                     },
                 },
@@ -661,7 +661,7 @@ OPTIONS
                 {
                     badFlagType: {
                         // @ts-expect-error: intentional invalid type to cover error branch
-                        type: 'purple',
+                        type: 'purple', // eslint-disable-line @typescript-eslint/no-unsafe-enum-assignment
                         flag: true,
                     },
                 },
