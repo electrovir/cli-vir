@@ -310,6 +310,53 @@ OPTIONS
             `.trim(),
         },
         {
+            it: 'removes shared indentation and aligns multi-line arg descriptions',
+            inputs: [
+                {
+                    configPath: {
+                        position: 0,
+                        required: true,
+                        description: `
+                            First line of the description.
+
+                            Second paragraph.
+                                Indented line.
+                        `,
+                    },
+                    aVeryLongFlagNameThatWraps: {
+                        flag: true,
+                        description: `
+                            Long flag first line.
+                            Long flag second line.
+                        `,
+                    },
+                },
+                {
+                    binName: 'multi-line',
+                },
+            ],
+            expect: `
+NAME
+    multi-line
+
+SYNOPSIS
+    multi-line [options] <config-path>
+
+POSITIONAL ARGUMENTS
+    <config-path>               First line of the description.
+
+                                Second paragraph.
+                                    Indented line. (required; type: string)
+
+OPTIONS
+    (All option keys are case-insensitive; snake_case, camelCase, and kebab-case variants are accepted.)
+
+    --a-very-long-flag-name-that-wraps [<string>]
+                            Long flag first line.
+                            Long flag second line.
+            `.trim(),
+        },
+        {
             it: 'renders a command description section',
             inputs: [
                 {

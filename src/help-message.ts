@@ -197,7 +197,7 @@ function renderPositionals(positionals: ExpandedForHelp['position']): string {
         }
         const metaPortion = '(' + metaBits.join('; ') + ')';
         const descBits = [
-            pos.description,
+            dedentDescription(pos.description),
             metaPortion,
         ].filter(check.isTruthy);
         if (!includeFlagsNoteAdded && check.isObject(pos.position) && pos.position.disableFlags) {
@@ -269,7 +269,7 @@ function renderOptions(flags: ExpandedForHelp['flag']): string {
         }
         const metaString = meta.length ? ` (${meta.join('; ')})` : '';
         const descBits = [
-            flagDefinition.description,
+            dedentDescription(flagDefinition.description),
             metaString,
         ]
             .filter(check.isTruthy)
@@ -327,6 +327,27 @@ function describeAllowedType(type: AllowedArgType | undefined): string {
     }
 }
 
+/**
+ * Remove the blank first and last lines and the shared indentation that a multi-line template
+ * literal carries over from the source code around it.
+ */
+function dedentDescription(description: string | undefined) {
+    if (!description) {
+        return description;
+    }
+
+    const lines = description.split(/\r?\n/).map((line) => line.trimEnd());
+    const contentLines = lines.slice(
+        lines.findIndex(check.isTruthy),
+        lines.findLastIndex(check.isTruthy) + 1,
+    );
+    const sharedIndentWidth = Math.min(
+        ...contentLines.filter(check.isTruthy).map((line) => line.length - line.trimStart().length),
+    );
+
+    return contentLines.map((line) => line.slice(sharedIndentWidth)).join('\n');
+}
+
 // eslint-disable-next-line @virmator/prefer-params-object
 function formatColumns(left: string, right: string): string {
     /** Typical man page left column width. */
@@ -335,8 +356,17 @@ function formatColumns(left: string, right: string): string {
         return '    ' + left;
     } else if (left.length >= padWidth - 2) {
         /** Put description on next line. */
-        return '    ' + left + '\n' + ' '.repeat(padWidth) + right.trim();
+        return '    ' + left + '\n' + ' '.repeat(padWidth) + alignDescriptionLines(right, padWidth);
     }
     const padding = ' '.repeat(padWidth - left.length);
-    return '    ' + left + padding + right.trim();
+    return '    ' + left + padding + alignDescriptionLines(right, padWidth + 4);
+}
+
+/** Indent every line after the first so a multi-line description stays in its column. */
+function alignDescriptionLines(description: string, column: number) {
+    return description
+        .trim()
+        .split('\n')
+        .map((line, index) => (index && line ? ' '.repeat(column) + line : line))
+        .join('\n');
 }
