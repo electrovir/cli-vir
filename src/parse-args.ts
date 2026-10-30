@@ -39,7 +39,6 @@ import {type ParsedArgs} from './parsed-arg-definition.js';
  * Parses raw args that have already had the leading command args (like `node` or the script name)
  * removed. In most cases, you should not use this directly. Instead use {@link parseArgs}.
  *
- * @deprecated Prefer {@link parseArgs}.
  * @category Internal
  */
 export function parseStrippedArgs(
@@ -413,7 +412,6 @@ export function parseArgs<const Args extends ArgDefinitions>(
         rawArgs,
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
     return parseStrippedArgs(relevantArgs, argDefinitions, params) as ParsedArgs<Args>;
 }
 

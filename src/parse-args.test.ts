@@ -195,7 +195,6 @@ describe(parseArgs.name, () => {
         argDefinitions: Readonly<ArgDefinitions>,
         params?: Readonly<PartialWithUndefined<ParseArgsParams>> | undefined,
     ) {
-        // eslint-disable-next-line @typescript-eslint/no-deprecated
         return parseStrippedArgs(relevantArgs, argDefinitions, {
             disableFailureHelp: true,
             ...params,
