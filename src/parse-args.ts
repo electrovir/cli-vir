@@ -450,9 +450,7 @@ function parseArgValue(
     if (check.isArray(arg)) {
         return arg.flatMap((innerArg) => parseArgValue(innerArg));
     } else {
-        const isRequired: boolean = arg.flag
-            ? arg.flag.valueRequirement === FlagRequirement.Required
-            : false;
+        const isRequired: boolean = arg.flag?.valueRequirement === FlagRequirement.Required;
 
         return parseRawValue(arg.value, arg.type, isRequired);
     }
