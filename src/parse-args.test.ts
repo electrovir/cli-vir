@@ -1,11 +1,12 @@
 import {assert, assertWrap} from '@augment-vir/assert';
-import {removeColor, type PartialWithUndefined} from '@augment-vir/common';
+import {removeColor, type MaybeArray, type PartialWithUndefined} from '@augment-vir/common';
 import {interpolationSafeWindowsPath, readPackageJson, runShellCommand} from '@augment-vir/node';
 import {describe, it, itCases} from '@augment-vir/test';
 import {basename, join, relative} from 'node:path';
 import {ArgValueType, FlagRequirement, type ArgDefinitions} from './arg-definition.js';
 import {type ParseArgsParams} from './parse-args-params.js';
 import {extractRelevantArgs, parseArgs, parseStrippedArgs} from './parse-args.js';
+import {type ParsedArgs} from './parsed-arg-definition.js';
 import {repoDirPath, scriptMockFilePath} from './repo-paths.mock.js';
 
 enum StringEnum {
@@ -198,8 +199,29 @@ describe(parseArgs.name, () => {
         return parseStrippedArgs(relevantArgs, argDefinitions, {
             disableFailureHelp: true,
             ...params,
-        });
+        }) satisfies ParsedArgs<ArgDefinitions> as Record<
+            string,
+            MaybeArray<string | number | boolean | undefined>
+        >;
     }
+
+    it('does not mutate the given args', () => {
+        const strippedArgs = [
+            '--flag',
+            'value',
+        ];
+
+        testParseStrippedArgs(strippedArgs, {
+            flag: {
+                flag: true,
+            },
+        });
+
+        assert.deepEquals(strippedArgs, [
+            '--flag',
+            'value',
+        ]);
+    });
 
     itCases(testParseStrippedArgs, [
         {

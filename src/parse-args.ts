@@ -36,17 +36,17 @@ import {type ParseArgsParams} from './parse-args-params.js';
 import {type ParsedArgs} from './parsed-arg-definition.js';
 
 /**
- * Parses raw args that have already had the leading command args (like `node` or the script name)
- * removed. In most cases, you should not use this directly. Instead use {@link parseArgs}.
+ * Same as {@link parseArgs} but for args that already had the leading command args (like `node` or
+ * the script name) removed, such as by {@link extractRelevantArgs}. Use this when a script strips
+ * its args and passes them to another function to parse.
  *
  * @category Internal
  */
-export function parseStrippedArgs(
-    /** This is mutated as args are popped off and parsed. */
-    relevantArgs: string[],
-    argDefinitionsInput: Readonly<ArgDefinitions>,
+export function parseStrippedArgs<const Args extends ArgDefinitions>(
+    strippedArgs: ReadonlyArray<string>,
+    argDefinitionsInput: Args,
     params: Readonly<PartialWithUndefined<ParseArgsParams>> = {},
-) {
+): ParsedArgs<Args> {
     const enableHelpFlag = !check.hasKey(argDefinitionsInput, 'help') && !params.disableHelp;
 
     const packageJsonPath =
@@ -93,8 +93,9 @@ export function parseStrippedArgs(
          * position.disableFlags set to true.
          */
         let flagsDisabled = false;
+        const remainingArgs = [...strippedArgs];
 
-        while ((rawArg = relevantArgs.shift())) {
+        while ((rawArg = remainingArgs.shift())) {
             const rawParsed = parseArg(rawArg);
             /**
              * If flags have been disabled by a positional, force any '-' prefixed token to be
@@ -114,7 +115,7 @@ export function parseStrippedArgs(
                 if (flagDefinition) {
                     const flagValue: string | undefined = getFlagArgValue(
                         parsed,
-                        relevantArgs,
+                        remainingArgs,
                         flagDefinition,
                     );
 
@@ -306,7 +307,7 @@ export function parseStrippedArgs(
             delete parsedArgs.version;
         }
 
-        return parsedArgs;
+        return parsedArgs satisfies Record<string, unknown> as ParsedArgs<Args>;
     } catch (error) {
         if (error instanceof InvalidArgError) {
             if (!params.disableFailureHelp) {
@@ -412,7 +413,7 @@ export function parseArgs<const Args extends ArgDefinitions>(
         rawArgs,
     });
 
-    return parseStrippedArgs(relevantArgs, argDefinitions, params) as ParsedArgs<Args>;
+    return parseStrippedArgs(relevantArgs, argDefinitions, params);
 }
 
 function readPackageVersion(packageJsonPath: string) {
