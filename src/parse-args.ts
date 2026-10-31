@@ -254,6 +254,22 @@ export function parseStrippedArgs<const Args extends ArgDefinitions>(
             }
         });
 
+        if (enableHelpFlag) {
+            if (parsedArgs.help) {
+                process.stdout.write(generateHelpMessage(argDefinitions, params) + '\n');
+                process.exit(0);
+            }
+            delete parsedArgs.help;
+        }
+
+        if (packageJsonPath) {
+            if (parsedArgs.version) {
+                process.stdout.write(readPackageVersion(packageJsonPath) + '\n');
+                process.exit(0);
+            }
+            delete parsedArgs.version;
+        }
+
         getObjectTypedValues(expandedArgDefinitions.flag).forEach((argDefinition) => {
             const argValue = parsedArgs[argDefinition.argName];
             const singleValue = argDefinition.flag.allowMultiple
@@ -290,22 +306,6 @@ export function parseStrippedArgs<const Args extends ArgDefinitions>(
                 parsedArgs[argDefinition.argName] = [];
             }
         });
-
-        if (enableHelpFlag) {
-            if (parsedArgs.help) {
-                process.stdout.write(generateHelpMessage(argDefinitions, params) + '\n');
-                process.exit(0);
-            }
-            delete parsedArgs.help;
-        }
-
-        if (packageJsonPath) {
-            if (parsedArgs.version) {
-                process.stdout.write(readPackageVersion(packageJsonPath) + '\n');
-                process.exit(0);
-            }
-            delete parsedArgs.version;
-        }
 
         return parsedArgs satisfies Record<string, unknown> as ParsedArgs<Args>;
     } catch (error) {

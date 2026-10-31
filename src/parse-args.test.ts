@@ -1992,6 +1992,22 @@ describe(parseArgs.name, () => {
         assert.isNotIn('{ args: {} }'.toLowerCase(), stdout);
     });
 
+    it('prints help even when a required arg is missing', async () => {
+        const output = await runShellCommand(
+            `tsx ${interpolationSafeWindowsPath(scriptMockFilePath)} --insert-required --help`,
+            {
+                cwd: repoDirPath,
+            },
+        );
+
+        assert.strictEquals(output.exitCode, 0);
+        assert.isIn(
+            `name\n    ${basename(scriptMockFilePath)}`,
+            removeColor(output.stdout.toLowerCase()),
+        );
+        assert.isNotIn('missing required arg', removeColor(output.stderr.toLowerCase()));
+    });
+
     it('can disable help', async () => {
         const output = await runShellCommand(
             `tsx ${interpolationSafeWindowsPath(scriptMockFilePath)} --help --no-help`,

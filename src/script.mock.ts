@@ -4,15 +4,25 @@ import {parseArgs} from './parse-args.js';
 
 const args = parseArgs(
     process.argv,
-    process.argv.includes('--insert-help')
-        ? {
-              help: {
-                  flag: {
-                      valueRequirement: FlagRequirement.Blocked,
+    {
+        ...(process.argv.includes('--insert-help')
+            ? {
+                  help: {
+                      flag: {
+                          valueRequirement: FlagRequirement.Blocked,
+                      },
                   },
-              },
-          }
-        : {},
+              }
+            : {}),
+        ...(process.argv.includes('--insert-required')
+            ? {
+                  command: {
+                      position: 0,
+                      required: true,
+                  },
+              }
+            : {}),
+    },
     {
         binName: undefined,
         packageJsonPath: process.argv.includes('--no-version')
